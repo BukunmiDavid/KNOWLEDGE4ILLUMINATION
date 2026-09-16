@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #141a2e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-manrope);
+
+  /* K4I brand — Royal Blue (#1E3A8A base) */
+  --color-royal-50: #eef2fb;
+  --color-royal-100: #dce4f6;
+  --color-royal-200: #b9c9ec;
+  --color-royal-300: #8fa8de;
+  --color-royal-400: #5f7fcb;
+  --color-royal-500: #3a5cbc;
+  --color-royal-600: #274ba8;
+  --color-royal-700: #1e3a8a;
+  --color-royal-800: #162a68;
+  --color-royal-900: #0f1e4e;
+  --color-royal-950: #0a1433;
+
+  /* K4I brand — Gold (#D4AF37 base) */
+  --color-gold-50: #fbf7e9;
+  --color-gold-100: #f5ebc9;
+  --color-gold-200: #ead89c;
+  --color-gold-300: #e0c470;
+  --color-gold-400: #d9ba4f;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #b08e25;
+  --color-gold-700: #8c701f;
+  --color-gold-800: #695418;
+  --color-gold-900: #473810;
+
+  /* Sophisticated neutral scale */
+  --color-ink: #1d2637;
+  --color-ink-soft: #3c4659;
+  --color-muted: #5d6b84;
+  --color-faint: #93a0b5;
+  --color-line: #e4e8ef;
+  --color-line-strong: #cdd5e1;
+  --color-surface: #f6f8fb;
+  --color-surface-raised: #ffffff;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgb(20 26 46 / 0.04), 0 8px 24px -12px rgb(20 26 46 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(20 26 46 / 0.06), 0 18px 44px -16px rgb(20 26 46 / 0.18);
+  --shadow-glow-gold: 0 0 0 4px rgb(212 175 55 / 0.14), 0 20px 48px -16px rgb(212 175 55 / 0.35);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-md: 300ms;
+}
+
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-royal-700);
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .k4i-fade-up {
+    animation: k4i-fade-up 0.55s var(--ease-out-soft) both;
+  }
+
+  .k4i-fade {
+    animation: k4i-fade 0.4s ease both;
+  }
+
+  .k4i-pulse-soft {
+    animation: k4i-pulse 2.4s ease-in-out infinite;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes k4i-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes k4i-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes k4i-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
