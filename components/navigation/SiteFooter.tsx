@@ -4,6 +4,7 @@ import { Logo } from "@/components/brand/Logo";
 import { cn } from "@/lib/utils";
 
 const links = [
+  { href: "/courses", label: "Courses" },
   { href: "/#about", label: "About" },
   { href: "/assessments", label: "Assessments" },
   { href: "/#how-it-works", label: "How It Works" },

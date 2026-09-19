@@ -1,14 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
+import { IconMenu, IconClose, IconLogOut } from "@/components/ui/icons";
+import { useAuth } from "@/lib/auth/useAuth";
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/assessments", label: "Assessments" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/courses", label: "Courses" },
+];
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, hydrated, logout } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -16,28 +27,60 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const links = (
+    <>
+      {navLinks.map((l) => (
+        <Link
+          key={l.href}
+          href={l.href}
+          className="text-sm font-medium text-ink-soft transition-colors hover:text-royal-700"
+        >
+          {l.label}
+        </Link>
+      ))}
+    </>
+  );
+
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-white/90 shadow-sm backdrop-blur-lg"
-          : "bg-transparent",
+        "fixed inset-x-0 top-0 z-50 border-b border-line/60 bg-white shadow-sm transition-all duration-300",
+        scrolled && "shadow-md",
       )}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" aria-label="Knowledge4Illumination Home">
+      <nav className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link href="/" aria-label="K4I — Home">
           <Logo />
         </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
-          <Link href="/" className="text-sm font-medium text-ink-soft hover:text-royal-700 transition-colors">Home</Link>
-          <Link href="/#about" className="text-sm font-medium text-ink-soft hover:text-royal-700 transition-colors">About K4I</Link>
-          <Link href="/#how-it-works" className="text-sm font-medium text-ink-soft hover:text-royal-700 transition-colors">How It Works</Link>
-          <Link href="/assessments" className="text-sm font-medium text-ink-soft hover:text-royal-700 transition-colors">Assessments</Link>
-          <Link href="/assessments/leadership-entrepreneurship">
-            <Button variant="primary" size="sm">Take the Assessment</Button>
-          </Link>
+        <div className="hidden items-center gap-6 md:flex">
+          {links}
+          {hydrated ? (
+            user ? (
+              <>
+                {isAdmin ? (
+                  <Link
+                    href="/admin"
+                    className="text-sm font-medium text-ink-soft transition-colors hover:text-royal-700"
+                  >
+                    Admin
+                  </Link>
+                ) : null}
+                <Button variant="primary" size="sm" onClick={logout}>
+                  <IconLogOut />
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <Link href="/register">
+                <Button variant="primary" size="sm">Get Started Free</Button>
+              </Link>
+            )
+          ) : (
+            <Link href="/register">
+              <Button variant="primary" size="sm">Get Started Free</Button>
+            </Link>
+          )}
         </div>
 
         <button
@@ -46,33 +89,42 @@ export function SiteHeader() {
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            {mobileOpen ? (
-              <>
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </>
-            ) : (
-              <>
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </>
-            )}
-          </svg>
+          {mobileOpen ? <IconClose /> : <IconMenu />}
         </button>
       </nav>
 
       {mobileOpen && (
-        <div className="border-t border-line bg-white/95 px-4 pb-6 pt-4 shadow-lg backdrop-blur-lg md:hidden">
+        <div className="border-t border-line/60 bg-white px-6 pb-6 pt-4 md:hidden">
           <div className="flex flex-col gap-4">
-            <Link href="/" className="text-sm font-medium text-ink" onClick={() => setMobileOpen(false)}>Home</Link>
-            <Link href="/#about" className="text-sm font-medium text-ink" onClick={() => setMobileOpen(false)}>About K4I</Link>
-            <Link href="/#how-it-works" className="text-sm font-medium text-ink" onClick={() => setMobileOpen(false)}>How It Works</Link>
-            <Link href="/assessments" className="text-sm font-medium text-ink" onClick={() => setMobileOpen(false)}>Assessments</Link>
-            <Link href="/assessments/leadership-entrepreneurship" onClick={() => setMobileOpen(false)}>
-              <Button variant="primary" size="md" className="w-full">Take the Assessment</Button>
-            </Link>
+            {navLinks.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-sm font-medium text-ink-soft transition-colors hover:text-royal-700"
+                onClick={() => setMobileOpen(false)}
+              >
+                {l.label}
+              </Link>
+            ))}
+            <div className="flex flex-col gap-3 pt-2">
+              {hydrated && user ? (
+                <>
+                  {isAdmin ? (
+                    <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                      <Button variant="ghost" size="md" className="w-full">Admin</Button>
+                    </Link>
+                  ) : null}
+                  <Button variant="primary" size="md" className="w-full" onClick={() => { logout(); setMobileOpen(false); }}>
+                    <IconLogOut />
+                    Sign out
+                  </Button>
+                </>
+              ) : (
+                <Link href="/register" onClick={() => setMobileOpen(false)}>
+                  <Button variant="primary" size="md" className="w-full">Get Started Free</Button>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}
